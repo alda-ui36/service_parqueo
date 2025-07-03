@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IEspacioRepository extends JpaRepository<Espacio, Integer>, JpaSpecificationExecutor<Espacio> {
+    long countByZonaId(Integer zonaId);
 
-} 
+    boolean existsByZonaIdAndNumeroEspacio(Integer zonaId, String numeroEspacio);
+}
