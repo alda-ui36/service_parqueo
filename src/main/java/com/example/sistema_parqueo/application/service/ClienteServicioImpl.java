@@ -3,6 +3,7 @@ package com.example.sistema_parqueo.application.service;
 import com.example.sistema_parqueo.application.dtos.mapper.ClienteMapper;
 import com.example.sistema_parqueo.application.dtos.request.ClienteRequest;
 import com.example.sistema_parqueo.application.dtos.response.ClienteResponse;
+import com.example.sistema_parqueo.application.dtos.specification.ClienteSpecification;
 import com.example.sistema_parqueo.application.utils.ClienteUtils;
 import com.example.sistema_parqueo.application.utils.ReniecUtils;
 import com.example.sistema_parqueo.domain.entity.Cliente;
@@ -57,7 +58,8 @@ public class ClienteServicioImpl implements IClienteService {
 
     @Override
     public Page<ClienteResponse> findAll(String query, Boolean estado, Pageable pageable) {
-        return null;
+        return clienteRepository.findAll(ClienteSpecification.filterBy(query,estado),pageable)
+                .map(clienteMapper::toResponse);
     }
 
     @Override

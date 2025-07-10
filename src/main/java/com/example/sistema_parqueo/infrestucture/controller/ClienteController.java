@@ -6,6 +6,9 @@ import com.example.sistema_parqueo.application.dtos.response.ClienteResponse;
 import com.example.sistema_parqueo.domain.port.input.IClienteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -54,5 +57,17 @@ public class ClienteController {
             return ResponseEntity.ok(ApiResponse.error("Cliente no encontrado",404));
         }
 
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<Page<ClienteResponse>>> findAll(
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) Boolean estado,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ClienteResponse> result = clienteService.findAll(query,estado,pageable);
+        return ResponseEntity.ok(ApiResponse.success(result,"Clientes obtenidos correctamente"));
     }
 }
