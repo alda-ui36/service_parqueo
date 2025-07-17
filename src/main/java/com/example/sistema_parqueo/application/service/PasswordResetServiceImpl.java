@@ -36,7 +36,18 @@ public class PasswordResetServiceImpl implements IPasswordResetService {
 
     @Override
     public void restablecerPassword(ResetPasswordRequest request) {
-
+        var usuario = usuarioRepository.findByUsernameOrEmail(request.getEmail(),request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Email no encontrado"));
+        if(usuario.getCodigoVerificacion() == null || usuario.getExpiracionCodigo() == null || usuario.getExpiracionCodigo().isBefore(LocalDateTime.now())){
+            throw  new IllegalArgumentException("codigo expirado o no encontrado");
+        }
+        if(!usuario.getCodigoVerificacion().equals(request.getCodigo())){
+            throw new IllegalArgumentException("codigo incorrecto");
+        }
+        usuario.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        usuario.setCodigoVerificacion(null);
+        usuario.setExpiracionCodigo(null);
+        usuarioRepository.save(usuario);
     }
 
     private String generarCodigo(){
