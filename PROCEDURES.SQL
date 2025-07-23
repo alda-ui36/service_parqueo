@@ -216,3 +216,45 @@ CALL sp_registrar_salida_parqueo(
     1,                      -- p_actualizado_por (ID del usuario que realiza la salida)
     NOW()                   -- p_actualizado_en
 );
+
+-- Asegúrate de que las tablas y columnas referenciadas existen y son correctas.
+
+DELIMITER $$
+CREATE PROCEDURE sp_obtener_registro_activo_por_espacio(
+    IN p_id_espacio INT
+)
+BEGIN
+    SELECT
+        rp.ticket AS ticket,
+        rp.hora_ingreso AS horaIngreso,
+        rp.tarifa_hora AS tarifaHora,
+        rp.monto_total AS montoTotal,
+        rp.estado_pago AS estadoPago,
+        c.nombres AS nombres,
+        c.ape_paterno AS apePaterno,
+        c.ape_materno AS apeMaterno,
+        c.dni AS dni,
+        c.telefono AS telefono,
+        v.placa AS placa,
+        c.correo AS email,
+        v.marca AS marca,
+        v.color AS color,
+        c.correo AS email,
+        tv.nombre AS tipoVehiculo,
+        z.nombre AS zonaNombre,
+        e.numero_espacio AS numeroEspacio
+    FROM registro_parqueo rp
+    JOIN cliente c ON c.id = rp.id_cliente
+    JOIN vehiculo v ON v.id = rp.id_vehiculo
+    JOIN espacio e ON e.id = rp.id_espacio
+    JOIN tipo_vehiculo tv ON tv.id = v.id_tipo_vehiculo
+    JOIN zona z ON z.id = e.id_zona
+    WHERE rp.id_espacio = p_id_espacio
+      AND rp.hora_salida IS NULL
+    LIMIT 1;
+END$$
+
+DELIMITER ;
+
+
+CALL sp_obtener_registro_activo_por_espacio(5);
