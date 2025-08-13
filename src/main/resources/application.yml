@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: update # Puedes usar validate, update, create, create-drop según tu entorno
     show-sql: true
     properties:
       hibernate:
@@ -28,16 +28,15 @@ spring:
           starttls:
             enable: true
 
-
 jwt:
-  secret: bXlTZWNyZXRLZXkyMDI0IUAjJCVeJiooKV8re31bXXw6Ozw+PyxzLi99
-  access-token: 604800000
-  refresh-token: 604800000
+  secret: ${JWT_SECRET}
+  access-token: ${JWT_ACCESS_TOKEN_EXPIRATION}
+  refresh-token: ${JWT_REFRESH_TOKEN_EXPIRATION}
 
 server:
   port: 8080
 
 apis:
   reniec:
-    url: ${RENIEC_URL}
-    token: ${RENIEC_TOKEN}
+    url: ${RENIEC_API_URL}
+    token: ${RENIEC_API_TOKEN}
